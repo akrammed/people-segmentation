@@ -1,0 +1,7 @@
+fastapi
+uvicorn
+torch
+albumentations
+iglovikov_helper_functions
+people_segmentation
+opencv-python-headless
