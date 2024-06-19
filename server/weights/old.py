@@ -1,7 +1,6 @@
 import numpy as np
 import cv2
 from sklearn.cluster import KMeans
-from concurrent.futures import ThreadPoolExecutor
 import matplotlib.pyplot as plt
 
 def segment_image(image_path, k=4):
@@ -13,11 +12,7 @@ def segment_image(image_path, k=4):
     all_pixels = im.reshape((-1, 3))
 
     km = KMeans(n_clusters=k)
-    
-    # Using ThreadPoolExecutor to fit the KMeans model
-    with ThreadPoolExecutor() as executor:
-        future = executor.submit(km.fit, all_pixels)
-        km = future.result()
+    km.fit(all_pixels)
 
     centers = km.cluster_centers_
     centers = np.array(centers, dtype='uint8')
@@ -43,11 +38,7 @@ def segment_image_from_array(image_array, k=4):
     all_pixels = im.reshape((-1, 3))
 
     km = KMeans(n_clusters=k)
-    
-    # Using ThreadPoolExecutor to fit the KMeans model
-    with ThreadPoolExecutor() as executor:
-        future = executor.submit(km.fit, all_pixels)
-        km = future.result()
+    km.fit(all_pixels)
 
     centers = km.cluster_centers_
     centers = np.array(centers, dtype='uint8')
@@ -64,22 +55,3 @@ def segment_image_from_array(image_array, k=4):
     
     new_img = new_img.reshape(original_shape)
     return new_img
-
-# Example usage
-if __name__ == "__main__":
-    image_path = 'path_to_your_image.jpg'
-    segmented_image = segment_image(image_path, k=4)
-    
-    # Display the original and segmented images
-    original_image = cv2.cvtColor(cv2.imread(image_path), cv2.COLOR_BGR2RGB)
-    
-    plt.figure(figsize=(10, 5))
-    plt.subplot(1, 2, 1)
-    plt.imshow(original_image)
-    plt.title('Original Image')
-    
-    plt.subplot(1, 2, 2)
-    plt.imshow(segmented_image)
-    plt.title('Segmented Image')
-    
-    plt.show()
